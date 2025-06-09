@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+User Registration | Marksheet Management System 
+{% endblock %}
+
+{% block header %}
+  <h1 class="page-title mb-2"> User Registration </h1>
+               <h2 class="h5">Welcome back to User Registration.</h2>
+               <p>This module is being used to create the New User, who then will be able to access the application using their Username and Password.</p>
+{% endblock %}
+
+
+
+{% block content %}
+ <div class="col-xl-5 mb-3 mb-xl-0">
+ <div class="card shadow-lg">
+        <div class="card-body center" >
+
+           <div class="text-center">
+              <h1 class="h3">Create a New Account</h1>
+              <p>Come join the College of Teacher Education Family! Let's set up your account.</p>
+           </div>
+
+           <form class="needs-validation" method="post" action="{% url 'register' %}" novalidate>
+            {% csrf_token %}
+              <div class="w-md-800px d-inline-flex row g-3 mb-4">
+                 <div class="col-sm-6">
+                    {% comment %} <input type="text" class="form-control" placeholder="First name" aria-label="First name" autofocus required> {% endcomment %}
+                    {{ form.first_name }}
+                    <div class="invalid-feedback">Please input your First Name</div>
+                 </div>
+                 <div class="col-sm-6">
+                  {{ form.last_name }}
+                    <div class="invalid-feedback">Please input your Last name</div>
+                 </div>
+                 <div class="col-12">
+                  {{ form.username }}
+                    <div class="invalid-feedback">Please choose your username</div>
+                 </div>
+                 <div class="col-12">
+                  {{ form.mobile_no }}
+                    <div class="invalid-feedback">Please Enter Your Mobile No</div>
+                 </div>
+                 <div class="col-12">
+                  {{ form.email }}
+                    <div class="invalid-feedback">Kindly enter proper email address</div>
+                 </div>
+                 <div class="col-sm-6">
+                  {{ form.password }}
+                    <div class="invalid-feedback">Please enter strong Password</div>
+                 </div>
+                 <div class="col-sm-6">
+                  {{ form.confirm_password }}
+                    <div class="invalid-feedback">Confirm entered password</div>
+                 </div>
+              </div>            
+             
+              <br>
+            <div class="card">
+               <ul class="errorlist">
+                  {% for field in form %}
+                     {% if field.errors %}
+                        {% for error in field.errors %}
+                           <li style="color:red;"> {{ error }} </li>
+                        {% endfor %}
+                     {% endif%}
+                  {% endfor%}
+                  {% if form.non_field_errors  %}
+                     <li style="color:crimson;"> {{ form.non_field_errors }} </li>
+                  {% endif %}
+               </ul>
+
+
+            </div>
+
+
+
+              <div class="d-grid mt-2">
+                 <button class="btn btn-primary btn-lg"  type="submit">Register</button>               
+              </div>
+              <div class="row">
+          {% comment %} fdssfdsfs {% endcomment %}
+                  {% comment %} {% include 'includes/alert.html' %} {% endcomment %}
+              </div>
+           </form>
+
+           {% comment %} <div class="d-flex justify-content-between mt-4">
+              Already have an account ?
+              <a href="{% url 'login' %}" class="btn-link text-decoration-none">Sign In</a>
+           </div> {% endcomment %}
+
+    </div>
+   </div>
+</div>
+{% endblock %}

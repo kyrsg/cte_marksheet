@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} Batch Year Settings | Marksheet Management System  {% endblock %}
+
+{% block header %}
+  <h1 class="page-title mb-2"> Batch Year Settings </h1>
+             <h2 class="h5">Welcome back to Batch Year Configuration.</h2>
+               <p>This module is being used to update the Batch Year</p>
+{% endblock %}
+
+{% block content %} 
+<div class="col-xl-12 mb-3 mb-xl-0">
+
+
+               <div class="card">
+
+                  <!-- Custom style form wizard -->
+                  <div class="d-md-flex align-content-stretch">
+
+                     <!-- Info banner -->
+                     <div class="col-md-4 bg-info bg-opacity-30 text-info-emphasis d-flex flex-column align-items-center justify-content-center p-3 rounded-start">
+                        <h3 class="h1 mb-3 text-info-emphasis">Batch Year Settings</h3>
+                        <p class="text-center">This module is being used to update the Batch Year.</p>
+                      
+                     </div>
+                     <!-- END : Info banner -->
+
+                     <!-- <div class="d-none d-md-block vr"></div> -->
+
+
+                     <div class="card-body flex-fill">
+
+                       
+
+                    
+
+                            <div class="card shadow-lg">
+        <div class="card-body center" >
+
+           <div class="text-center">
+              <h1 class="h3">Edit a Batch Year Details</h1>
+              <p>This module is being used to update the Batch Year.</p>
+           </div>
+
+             <form class="needs-validation" method="post" action="{% url 'batch-edit' table_name.id %}" novalidate>
+            {% csrf_token %}
+              <div class="w-md-800px d-inline-flex row g-3 mb-4" style="width:100%;">
+               
+                 </div>
+                 <div class="col-sm-12">
+                  {{ form.heads }}
+                    <div class="invalid-feedback">Please input Batch Year Name</div>
+                 </div>      
+              </div>         
+           
+              <br>
+
+          
+            
+         <div class="card">
+               <ul class="errorlist"> 
+                  {% if form.errors %}              
+                  {% for field in form %}
+                     {% if field.errors %}
+                        {% for error in field.errors %}
+                           <li style="color:red;"> {{ error }} </li>
+                        {% endfor %}
+                     {% endif%}
+                  {% endfor%}
+                  {% if form.non_field_errors  %}
+                     <li style="color:crimson;"> {{ form.non_field_errors }} </li>
+                  {% endif %}
+                  {% endif %}
+               </ul>
+            </div>
+             
+
+              
+             
+              <div class="d-grid mt-2">
+                 <button class="btn btn-primary btn-lg"  type="submit">UPDATE</button>               
+              </div>
+         
+           </form>
+
+           {% comment %} <div class="d-flex justify-content-between mt-4">
+              Already have an account ?
+              <a href="{% url 'login' %}" class="btn-link text-decoration-none">Sign In</a>
+           </div> {% endcomment %}
+
+    </div>
+
+
+                     </div>
+                  </div>
+                  <!-- END : Custom style form wizard -->
+
+               </div>
+
+               
+</div>
+
+
+{% endblock %}

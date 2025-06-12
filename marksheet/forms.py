@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, Subjects, Semester, Batch
 
 class UserForm (forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -27,8 +27,21 @@ class UserForm (forms.ModelForm):
 
         if password != confirm_password:
             raise forms.ValidationError("Password does not match !!")
-    
 
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subjects
+        fields = ['code', 'heads']
+    code = forms.CharField(max_length=30)
+    heads = forms.CharField(max_length=100)    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            self.fields['code'].widget.attrs['placeholder'] = 'Enter Code'
+            self.fields['heads'].widget.attrs['placeholder'] = 'Enter Subject Name'
+          
 class OrganizationForm(forms.Form):
     heads = forms.CharField()
     address_1 = forms.CharField()
@@ -49,4 +62,29 @@ class OrganizationForm(forms.Form):
             self.fields['email_address'].widget.attrs['placeholder'] = 'Email Address'
             self.fields['mobile_no'].widget.attrs['placeholder'] = 'Mobile No'
             self.fields['website'].widget.attrs['placeholder'] = 'Website'  
-            
+
+class SemesterForm(forms.ModelForm):
+    class Meta:
+        model = Semester
+        fields = ['heads']
+   
+    heads = forms.CharField(max_length=50)    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            self.fields['heads'].widget.attrs['placeholder'] = 'Enter Semester Name'
+
+class BatchForm(forms.ModelForm):
+    class Meta:
+        model = Batch
+        fields = ['heads']
+   
+    heads = forms.CharField(max_length=50)    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+            self.fields['heads'].widget.attrs['placeholder'] = 'Enter Batch Name'                        

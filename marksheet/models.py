@@ -53,10 +53,10 @@ class User(AbstractBaseUser):
         db_table = 't_users'
         verbose_name_plural = 'Users'
 
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    username = models.CharField(max_length=50, unique=True)
-    mobile_no = models.CharField(max_length=12, unique=True)
+    first_name = models.CharField(max_length=50, error_messages="Enter First Name")
+    last_name = models.CharField(max_length=50, error_messages="Enter Last Name")
+    username = models.CharField(max_length=50, unique=True, error_messages="Enter User Name")
+    mobile_no = models.CharField(max_length=12, unique=True, error_messages="Enter Mobile Number")
     email = models.EmailField(max_length=50, unique=True)
     password= models.CharField(max_length=150) 
 
@@ -133,6 +133,11 @@ class Subjects(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def clean(self):
+        self.code = self.code.capitalize()
+        self.heads = self.heads.capitalize()
+
+
 class PaperNo(models.Model):
     class Meta:
         db_table = 't_paperno'
@@ -141,6 +146,9 @@ class PaperNo(models.Model):
     heads = models.CharField(max_length=30, unique=True, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        self.heads = self.heads.capitalize()
 
 class PaperType(models.Model):
     class Meta:
@@ -151,6 +159,9 @@ class PaperType(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def clean(self):
+        self.heads = self.heads.capitalize()
+
 class Status(models.Model):
     class Meta:
         db_table = 't_status'
@@ -159,6 +170,9 @@ class Status(models.Model):
     heads = models.CharField(max_length=30, unique=True, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        self.heads = self.heads.capitalize()
 
 class Organization(models.Model):
     class Meta:
@@ -175,6 +189,24 @@ class Organization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Semester(models.Model):
+    class Meta:
+        db_table = 't_semester'
+        verbose_name_plural = "SEMESTER SETUP"
+    
+    heads = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Batch(models.Model):
+    class Meta:
+        db_table = 't_batch'
+        verbose_name_plural = "BATCH SETUP"
+    
+    heads = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
 # def get_absolute_url(self):
 #     return reverse("book-detail", kwargs={"pk": self.pk})

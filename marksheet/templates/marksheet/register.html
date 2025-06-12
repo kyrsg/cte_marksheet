@@ -44,7 +44,7 @@
               <p>Come join the College of Teacher Education Family! Let's set up your account.</p>
            </div>
 
-           <form class="needs-validation" method="post" action="{% url 'register' %}" novalidate>
+             <form class="needs-validation" method="post" action="{% url 'register' %}" novalidate>
             {% csrf_token %}
               <div class="w-md-800px d-inline-flex row g-3 mb-4">
                  <div class="col-sm-6">
@@ -79,9 +79,11 @@
               </div>            
              
               <br>
+
+          
             <div class="card">
-               <ul class="errorlist">
-                  {% for field in form %}
+               <ul class="errorlist">               
+                  {% for field in error %}
                      {% if field.errors %}
                         {% for error in field.errors %}
                            <li style="color:red;"> {{ error }} </li>
@@ -92,12 +94,10 @@
                      <li style="color:crimson;"> {{ form.non_field_errors }} </li>
                   {% endif %}
                </ul>
-
-
             </div>
 
-
-
+              
+             
               <div class="d-grid mt-2">
                  <button class="btn btn-primary btn-lg"  type="submit">Register</button>               
               </div>
@@ -116,37 +116,16 @@
                                     </tr>
                                  </thead>
                                  <tbody>
-                                    <tr>
-                                       <td><a href="#" class="btn-link">Order #53451</a></td>
-                                       <td> </td>
-                                       <td> </td>
-                                        <td><a href="#"><img src="{% static 'img/delete.png' %}"> </img> </a></td>
+                                    {% for users in userdetail %}
+                                       <tr>
+                                       <td><a href="#" class="btn-link">{{ users.username|title}}</a></td>
+                                       <td>{{ users.mobile_no}} </td>
+                                       <td>{{ users.email}} </td>
+                                        <td><a href="#" data-id={{ users.id }}><img src="{% static 'img/delete.png' %}"> </img> </a></td>
                                     </tr>
-                                    <tr>
-                                       <td><a href="#" class="btn-link">Order #53452</a></td>
-                                         <td> </td>
-                                       <td> </td>
-                                        <td><a href="#"><img src="{% static 'img/delete.png' %}"> </img> </a></td>
-                                    </tr>
-                                    <tr>
-                                       <td><a href="#" class="btn-link">Order #53453</a></td>
-                                         <td> </td>
-                                       <td> </td>
-                                       <td><a href="#"><img src="{% static 'img/delete.png' %}"> </img> </a></td>
-                                    </tr>
-                                    <tr>
-                                       <td><a href="#" class="btn-link">Order #53454</a></td>
-                                         <td> </td>
-                                       <td> </td>
-                                     <td><a href="#"><img src="{% static 'img/delete.png' %}"> </img> </a></td>
-                                    </tr>
-                                    <tr>
-                                       <td><a href="#" class="btn-link">Order #53455</a></td>
-                                         <td> </td>
-                                       <td> </td>
-                                        <td><a href="#"><img src="{% static 'img/delete.png' %}"> </img> </a></td>
-                                    </tr>
+                                    {% endfor %}
                                    
+                                    
                                  </tbody>
                               </table>
                            </div>

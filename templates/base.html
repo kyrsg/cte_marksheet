@@ -32,6 +32,12 @@
    <!-- Demo purpose CSS [ DEMO ] -->
    <link rel="stylesheet" href="{% static 'css/demo-purpose/demo-settings.min.css' %}"> 
 
+    <!-- Themify Icons [ OPTIONAL ] -->
+  
+   <link rel="stylesheet" href="{% static 'css/demo-purpose/themify-icons.min.css' %}"> 
+
+   <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
     {% block css_files %}
 
     {% endblock %}
@@ -472,7 +478,7 @@
                               <a href="{% url 'organization-setup' %}" class="nav-link {{ organizationactive }}">Organization Setup</a>
                            </li>
                            <li class="nav-item">
-                              <a href="{% url 'subject' %}" class="nav-link {{ subjectactive }}">Subjects</a>
+                              <a href="{% url 'subject-add' %}" class="nav-link {{ subjectactive }}">Subjects</a>
                            </li>
 
                             <li class="nav-item">
@@ -480,11 +486,11 @@
                            </li>
 
                             <li class="nav-item">
-                              <a href="./layouts-push-navigation.html" class="nav-link">Paper Type</a>
+                              <a href="{% url 'batch-add' %}" class="nav-link {{ menu_active }}">Batch Year</a>
                            </li>
                           
                             <li class="nav-item">
-                              <a href="{% url 'status' %}" class="nav-link {{ statusactive }}">Status</a>
+                              <a href="{% url 'semester-add' %}" class="nav-link {{ menu_active }}">Semester</a>
                            </li>
 
                         </ul>
@@ -548,6 +554,12 @@
 
      <!-- Initialize [ SAMPLE ] -->
    <script src="{% static 'js/form-wizard.js' %}"></script>
+
+      <!-- Validation Script [ OPTIONAL ] -->
+   <script src="{% static 'js/form-validation.js' %}"></script>
+
+         <!-- Validation Script [ OPTIONAL ] -->
+   <script src="{% static 'js/demo-icons.js' %}"></script>
 
     <!-- Initialize [ SAMPLE ] -->
    <script src="{% static 'vendors/zangdar/zangdar.min.js' %}"></script>

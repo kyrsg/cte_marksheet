@@ -112,7 +112,7 @@
                                        <th>Username</th>  
                                        <th>Mobile Number</th>  
                                         <th>Email Address</th>                                      
-                                       <th></th>
+                                       <th>Active</th>
                                     </tr>
                                  </thead>
                                  <tbody>
@@ -121,7 +121,7 @@
                                        <td><a href="#" class="btn-link">{{ users.username|title}}</a></td>
                                        <td>{{ users.mobile_no}} </td>
                                        <td>{{ users.email}} </td>
-                                        <td><a href="#" data-id={{ users.id }}><img src="{% static 'img/delete.png' %}"> </img> </a></td>
+                                        <td>{{ users.is_active }}</td>
                                     </tr>
                                     {% endfor %}
                                    

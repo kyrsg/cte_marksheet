@@ -367,7 +367,7 @@
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <!-- END - HEADER -->
 
-
+     
       <!-- MAIN NAVIGATION -->
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <nav id="mainnav-container" class="mainnav">
@@ -376,7 +376,7 @@
             <!-- Navigation menu -->
             <div class="mainnav__top-content scrollable-content pb-5">
 
-
+     
                <!-- Profile Widget -->
                <div id="_dm-mainnavProfile" class="mainnav__widget my-3 hv-outline-parent">
 
@@ -385,7 +385,7 @@
                      <img class="mainnav__avatar img-md rounded-circle hv-oc" src="{% static 'img/profile-photos/1.png' %}" alt="Profile Picture">
                   </div>
 
-
+         {% if user.is_authenticated %}
                   <div class="mininav-content collapse d-mn-max">
                      <span data-popper-arrow class="arrow"></span>
                      <div class="d-grid">
@@ -393,29 +393,20 @@
                         <!-- User name and position -->
                         <button class="mainnav-widget-toggle d-block btn border-0 p-2" data-bs-toggle="collapse" data-bs-target="#usernav" aria-expanded="false" aria-controls="usernav">
                            <span class="dropdown-toggle d-flex justify-content-center align-items-center">
-                              <h5 class="mb-0 me-3">Aaron Chavez</h5>
+                              <h5 class="mb-0 me-3">{{ user.first_name|title }}  {{ user.last_name|title }}</h5>
                            </span>
-                           <small class="text-body-secondary">Administrator</small>
+                           <small class="text-body-secondary">{{ user.username|title }}</small>
                         </button>
 
 
                         <!-- Collapsed user menu -->
-                        <div id="usernav" class="nav flex-column collapse">
-                          
-                           <a href="#" class="nav-link">
-                              <i class="demo-pli-male fs-5 me-2"></i>
-                              <span class="ms-1">Profile</span>
-                           </a>
+                        <div id="usernav" class="nav flex-column collapse">                          
                          
-                           <a href="#" class="nav-link">
-                              <i class="demo-pli-computer-secure fs-5 me-2"></i>
-                              <span class="ms-1">Lock screen</span>
-                           </a>
-                            <a href="{% url 'register' %}" class="nav-link {{ registeractive }}">
+                            <a href="{% url 'register' %}" class="nav-link {{ register_active }}">
                               <i class="demo-pli-male fs-5 me-2"></i>
                               <span class="ms-1">Register User</span>
                            </a>
-                           <a href="#" class="nav-link">
+                           <a href="{% url 'logout' %}" class="nav-link">
                               <i class="demo-pli-unlock fs-5 me-2"></i>
                               <span class="ms-1">Logout</span>
                            </a>
@@ -452,6 +443,9 @@
                         <!-- Layouts submenu list -->
                         <ul class="mininav-content nav collapse">
                            <li data-popper-arrow class="arrow"></li>
+                            <li class="nav-item">
+                              <a href="./layouts-mini-navigation.html" class="nav-link">Student Profile</a>
+                           </li>
                            <li class="nav-item">
                               <a href="./layouts-mini-navigation.html" class="nav-link">Marksheet</a>
                            </li>
@@ -475,22 +469,18 @@
                         <ul class="mininav-content nav collapse">
                            <li data-popper-arrow class="arrow"></li>
                            <li class="nav-item">
-                              <a href="{% url 'organization-setup' %}" class="nav-link {{ organizationactive }}">Organization Setup</a>
+                              <a href="{% url 'organization-setup' %}" class="nav-link {{ organization_active }}">Organization Setup</a>
                            </li>
                            <li class="nav-item">
-                              <a href="{% url 'subject-add' %}" class="nav-link {{ subjectactive }}">Subjects</a>
+                              <a href="{% url 'subject-add' %}" class="nav-link {{ subjects_active }}">Subjects</a>
                            </li>
-
+                       
                             <li class="nav-item">
-                              <a href="./layouts-push-navigation.html" class="nav-link">Paper No</a>
-                           </li>
-
-                            <li class="nav-item">
-                              <a href="{% url 'batch-add' %}" class="nav-link {{ menu_active }}">Batch Year</a>
+                              <a href="{% url 'batch-add' %}" class="nav-link {{ batch_active }}">Batch Year</a>
                            </li>
                           
                             <li class="nav-item">
-                              <a href="{% url 'semester-add' %}" class="nav-link {{ menu_active }}">Semester</a>
+                              <a href="{% url 'semester-add' %}" class="nav-link {{ semester_active }}">Semester</a>
                            </li>
 
                         </ul>
@@ -503,7 +493,7 @@
                   </ul>
                </div>
                <!-- END : Navigation Category -->
-
+  {% endif %}
          </div>
       </nav>
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -512,7 +502,7 @@
    </div>
    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
    <!-- END - PAGE CONTAINER -->
-
+ 
 
    <!-- SCROLL TO TOP BUTTON -->
    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

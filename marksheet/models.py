@@ -87,14 +87,11 @@ class User(AbstractBaseUser):
 
 
 #END OF CUSTOM USER MODEL
-
-class Marksheet(models.Model):
+class StudentProfile(models.Model):
     class Meta:
-        db_table = 't_marksheet'
-        verbose_name_plural = 'MARKSHEETS'
+        db_table = 't_studentsprofile'
+        verbose_name_plural = 'STUDENTS PROFILE'
 
-    roll_no = models.CharField(max_length=20, null=False, blank=False, db_index=True, unique=True)
-    regn_no = models.CharField(max_length=20, null=True, blank=True)
     students_name = models.CharField(max_length=100, null=False, blank=False, db_index=True)
     students_dob = models.DateField()
     fathers_name = models.CharField(max_length=100, null=True, blank=True)
@@ -102,6 +99,17 @@ class Marksheet(models.Model):
     students_address = models.CharField(max_length=200, null=True, blank=True)
     mobile_no = models.CharField(max_length=10, blank=True, null=True, validators=[MaxLengthValidator(10,"Mobile Number cannot be more than 10 Digits")] )
     alternate_no = models.CharField(max_length=10, blank=True, null=True, validators=[MaxLengthValidator(10,"Mobile Number cannot be more than 10 Digits")] )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Marksheet(models.Model):
+    class Meta:
+        db_table = 't_marksheet'
+        verbose_name_plural = 'MARKSHEETS'
+        
+    student_id = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, default=0)
+    roll_no = models.CharField(max_length=20, null=False, blank=False, db_index=True, unique=True)    
+    regn_no = models.CharField(max_length=20, null=True, blank=True)   
     exam_year =  models.CharField(max_length=20, null=True, blank=True)
     certificate_upload = models.FileField(upload_to="certificate")
     marksheet_upload = models.FileField(upload_to="marksheet")

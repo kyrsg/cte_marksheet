@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Subjects, Semester, Batch, Marksheet
+from .models import User, Subjects, Semester, Batch, Marksheet, StudentProfile
 
 class UserForm (forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())  
@@ -34,7 +34,10 @@ class UserForm (forms.ModelForm):
 class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subjects
-        fields = ['code', 'heads']
+        fields = ['semester_id', 'code', 'heads']
+
+   
+    semester_id = forms.ModelChoiceField(queryset=Semester.objects.all())
     code = forms.CharField(max_length=30)
     heads = forms.CharField(max_length=100)    
 
@@ -42,6 +45,7 @@ class SubjectForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+            self.fields['semester_id'].widget.attrs['placeholder'] = 'Select Semester'
             self.fields['code'].widget.attrs['placeholder'] = 'Enter Code'
             self.fields['heads'].widget.attrs['placeholder'] = 'Enter Subject Name'
           
@@ -113,27 +117,53 @@ class LoginForm(forms.ModelForm):
 
 
 
-
-class MarksheetForm(forms.ModelForm):
+class StudentProfileForm(forms.ModelForm):
     class Meta:
-        model = Marksheet
-        fields = ['roll_no', 'regn_no', 'students_name', 'address_3', 'email_address', 'mobile_no']
+        model = StudentProfile
+        fields = ['students_name', 'regn_no', 'roll_no', 'mobile_no', 'alternate_no', 'email_address']
 
-    heads = forms.CharField(max_length=100)
-    address_1 = forms.CharField(max_length=100)
-    address_2 = forms.CharField(max_length=100)
-    address_3 = forms.CharField(max_length=100)
-    email_address = forms.EmailField(max_length=50)
+    students_name = forms.CharField(max_length=100)
+    regn_no = forms.CharField(max_length=100)
+    roll_no = forms.CharField(max_length=100)
     mobile_no = forms.CharField(max_length=100)
+    alternate_no = forms.CharField(max_length=100)
+    email_address = forms.EmailField(max_length=50)
+    
     
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-            self.fields['heads'].widget.attrs['placeholder'] = 'Enter Organization Name'
-            self.fields['address_1'].widget.attrs['placeholder'] = 'Address 1'
-            self.fields['address_2'].widget.attrs['placeholder'] = 'Address 2'
-            self.fields['address_3'].widget.attrs['placeholder'] = 'Address 3'
-            self.fields['email_address'].widget.attrs['placeholder'] = 'Email Address'
+            self.fields['students_name'].widget.attrs['placeholder'] = 'Enter Students Name'
+            self.fields['regn_no'].widget.attrs['placeholder'] = 'Enter Registration Number'
+            self.fields['roll_no'].widget.attrs['placeholder'] = 'Enter Roll NO'
             self.fields['mobile_no'].widget.attrs['placeholder'] = 'Mobile No'
+            self.fields['alternate_no'].widget.attrs['placeholder'] = 'Alternate Mobile NO'
+            self.fields['email_address'].widget.attrs['placeholder'] = 'Email Address'
+          
+
+
+# class MarksheetForm(forms.ModelForm):
+#     class Meta:
+#         model = Marksheet
+#         fields = ['roll_no', 'regn_no', 'students_name', 'address_3', 'email_address', 'mobile_no']
+
+#     heads = forms.CharField(max_length=100)
+#     address_1 = forms.CharField(max_length=100)
+#     address_2 = forms.CharField(max_length=100)
+#     address_3 = forms.CharField(max_length=100)
+#     email_address = forms.EmailField(max_length=50)
+#     mobile_no = forms.CharField(max_length=100)
+    
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         for field in self.fields.values():
+#             field.widget.attrs['class'] = 'form-control'
+#             self.fields['heads'].widget.attrs['placeholder'] = 'Enter Organization Name'
+#             self.fields['address_1'].widget.attrs['placeholder'] = 'Address 1'
+#             self.fields['address_2'].widget.attrs['placeholder'] = 'Address 2'
+#             self.fields['address_3'].widget.attrs['placeholder'] = 'Address 3'
+#             self.fields['email_address'].widget.attrs['placeholder'] = 'Email Address'
+#             self.fields['mobile_no'].widget.attrs['placeholder'] = 'Mobile No'

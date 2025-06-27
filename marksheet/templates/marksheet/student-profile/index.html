@@ -2,12 +2,12 @@
 
 {% load static %}
 
-{% block title %} Organization Setup | Marksheet Management System  {% endblock %}
+{% block title %} Student Profile Setup | Marksheet Management System  {% endblock %}
 
 {% block header %}
-  <h1 class="page-title mb-2"> Organization Setup </h1>
-             <h2 class="h5">Welcome back to Organizaion Setup.</h2>
-               <p>This module is being used to set the Organization details !!!</p>
+  <h1 class="page-title mb-2"> Student Profile Setup </h1>
+             <h2 class="h5">Welcome back to Student Profile Page.</h2>
+               <p>This module is being used to set the Display the Student Profile !!!</p>
 {% endblock %}
 
 {% block content %} 
@@ -21,8 +21,8 @@
 
                      <!-- Info banner -->
                      <div class="col-md-4 bg-info bg-opacity-30 text-info-emphasis d-flex flex-column align-items-center justify-content-center p-3 rounded-start">
-                        <h3 class="h1 mb-3 text-info-emphasis">Organization Details</h3>
-                        <p class="text-center">This module is being used to set the Organization Details.</p>
+                        <h3 class="h1 mb-3 text-info-emphasis">Student Profile</h3>
+                        <p class="text-center">This module is being used to set the Display the Student Profile.</p>
                       
                      </div>
                      <!-- END : Info banner -->
@@ -36,91 +36,113 @@
 
                     
 
-                            <div class="card shadow-lg">
-        <div class="card-body center" >
+         <div class="card shadow-lg">
+         </div>
+
+           <div class="card-body center" >
 
            <div class="text-center">
-              <h1 class="h3">Setup Organization Details</h1>
-              <p> This Module is used to setup the Organization Details</p>
+              <h1 class="h3">Student Profile</h1>
+              <p> This Module is used to display the Student Profile.</p>
            </div>
 
-           <form class="needs-validation" method="post" action="{% url 'organization-setup' %}" novalidate>
-            {% csrf_token %}
-              <div class="w-md-800px d-inline-flex row g-3 mb-4">
-                 <div class="col-sm-6">
-                    {% comment %} <input type="text" class="form-control" placeholder="First name" aria-label="First name" autofocus required> {% endcomment %}
-                    {{ form.heads }} 
-                    <div class="invalid-feedback">Please Organization Name</div>
-                 </div>
-                 <div class="col-sm-6">
-                  {{ form.address_1 }} 
-                    <div class="invalid-feedback">Kindly Specify Address</div>
-                 </div>
-                 <div class="col-12">
-                  {{ form.address_2 }}
-                    <div class="invalid-feedback">Kindly Specify Address</div>
-                 </div>
-                  <div class="col-12">
-                  {{ form.address_3 }}
-                    <div class="invalid-feedback">Kindly Specify Address</div>
-                 </div>
-                 <div class="col-12">
-                  {{ form.mobile_no }}
-                    <div class="invalid-feedback">Please Enter Your Mobile No</div>
-                 </div>
-                 <div class="col-12">
-                  {{ form.email_address }}
-                    <div class="invalid-feedback">Kindly enter proper email address</div>
-                 </div>
-               
-              </div>            
-             
-              <br>
-            <div class="card">
-               <ul class="errorlist">
-                  {% for field in form %}
-                     {% if field.errors %}
-                        {% for error in field.errors %}
-                           <li style="color:red;"> {{ error }} </li>
-                        {% endfor %}
-                     {% endif%}
-                  {% endfor%}
-                  {% if form.non_field_errors  %}
-                     <li style="color:crimson;"> {{ form.non_field_errors }} </li>
-                  {% endif %}
-               </ul>
+          
+ <div class="card">
+                  <div class="card-header">
+                  
+                     <!-- Toolbar -->
+                     <div class="d-flex gap-2 py-3" style="max-width: 100%;">
+                        <select id="_dm-filterField" class="form-select">
+                           <option value="none">Select field</option>
+                           <option value="students_name">Students Name</option>
+                           <option value="Batch_year">Batch Year</option>
+                           <option value="roll_no">Roll Number</option>
+                           <option value="regn_no">Registration Number</option>
+                       
+                        </select>
+{% comment %} 
+                        <select id="_dm-filterType" class="form-select">
+                           <option value="like">Like</option>
+                           <option value="=">=</option>
+                           <option value="<">
+                              << /option>
+                           <option value="<=">
+                              <=< /option>
+                           <option value=">">></option>
+                           <option value=">=">>=</option>
+                           <option value="!=">!=</option>
+                        </select> {% endcomment %}
+
+                        <input id="_dm-filterValue" class="form-control" type="text" placeholder="value to filter">
+                        <button id="_dm-filterClear" class="btn btn-primary text-nowrap">Search Result</button>
+                        <a href="{% url 'student-profile-add' %}" class="btn btn-success text-nowrap"> CREATE STUDENT PROFILE </a>
+                      
+                     </div>
+                     <!-- END : Toolbar -->
+
+                  </div>
+                  <div class="card-body">
 
 
-            </div>
+                     <!-- Filter Data -->
+                     <div id="_dm-tabulatorFilter" class="table table-striped"></div>
+                     <!-- END : Filter Data -->
 
 
+                  </div>
 
-              <div class="d-grid mt-2">
-                 <button class="btn btn-primary btn-lg"  type="submit">Setup Organization</button>               
-              </div>
+                    <!-- Small table -->
+                           <div class="table-responsive">
+                              <table class="table table-sm">
+                                 <thead>
+                                    <tr>
+                                       <th>Students Name</th> 
+                                        <th>Email Address</th> 
+                                       <th>Registration No</th>  
+                                        <th>Roll Number</th>
+                                        <th></th>
+                                        <th></th>
+                                       <th></th>                                      
+                                      
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for col in table_name %}
+                                       <tr>
+                                       <td> {{ col.students_name }}</td>
+                                       <td> {{ col.email_address }}</td>
+                                       <td> {{ col.regn_no }} </td>
+                                       <td> {{ col.roll_no }}</td>
+                                       <td></td>
+                                       <td></td>
+                                       <td></td>
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                    
+                                 </tbody>
+                              </table>
+                           </div>
+                           <!-- END : Small table -->
 
-              
-            
-           </form>
 
-           {% comment %} <div class="d-flex justify-content-between mt-4">
-              Already have an account ?
-              <a href="{% url 'login' %}" class="btn-link text-decoration-none">Sign In</a>
-           </div> {% endcomment %}
-
+ </div>
+ 
              {% include 'includes/message.html' %}
+  </div>
+  
 
-    </div>
+ 
+
+
+            
+
 
 
                      </div>
+
                   </div>
-                  <!-- END : Custom style form wizard -->
-
                </div>
-
-               
 </div>
-
 
 {% endblock %}

@@ -1,11 +1,27 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect, HttpResponse
 from django.views import View
-from .forms import UserForm, OrganizationForm, SubjectForm, SemesterForm, BatchForm, LoginForm
-from .models import User, Organization, Subjects, Semester, Batch
+from .forms import UserForm, OrganizationForm, SubjectForm, SemesterForm, BatchForm, LoginForm, StudentProfileForm
+from .models import User, Organization, Subjects, Semester, Batch, StudentProfile
 from django.contrib import messages, auth 
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
+
+from django.http import JsonResponse
+from django.db import IntegrityError
 # Create your views here.
+
+def get_filtered_data(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request
+       
+        selected_value = request.GET.get('selected_value')
+       
+        # Filter your data based on selected_value
+        filtered_data = Subjects.objects.filter(semester_id=selected_value).values() # .values() returns a list of dictionaries
+
+       
+        return JsonResponse(list(filtered_data), safe=False)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 class IndexView(View):
    
@@ -102,6 +118,7 @@ class SubjectAddView(View):
     def get(self, request):
         form = SubjectForm()
         subject = Subjects.objects.all().order_by('code')
+        # subject = Subjects.objects.select_related('semester_id')
         context = {
             'form' : form,         
             'subjects_active': 'active',
@@ -110,20 +127,69 @@ class SubjectAddView(View):
         return render(request, "marksheet/subjects/add.html", context)
 
     def post(self, request):        
-        form = SubjectForm(request.POST)
-        subject = Subjects.objects.all().order_by('code')
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Subjects Saved Successfully !!!")   
-        else:
-            form = SubjectForm(request.POST)
-            context = {
-                'form' : form,         
-                'subjects_active': 'active',
-                'table_name' : subject,
-            }
-            return render(request, "marksheet/subjects/add.html", context)
-        return redirect('/subject/index')
+           
+           if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+              
+                semester_id = request.POST.get('semester_id')
+                my_instance = Semester.objects.get(pk=semester_id)             
+
+                code = request.POST.get('code')
+                heads = request.POST.get('heads')
+
+                try:
+                    instance = Subjects(semester_id = my_instance, code = code, heads = heads)
+                    instance.save()
+                    filtered_data = Subjects.objects.filter(semester_id=semester_id).values() # .values() returns a list of dictionaries
+                   
+                    return JsonResponse(list(filtered_data), safe=False)
+                except:
+                  
+                    return JsonResponse({'status': 'Error Information', 'errors': "Subject with the Code : " + code + " Already Exist !!! "}, status=400)
+
+               
+                
+              
+               
+                    # messages.error(request, "Duplicate Entry Found")
+                    # return JsonResponse({'status': 'error', 'errors': "Duplicate Entry"}, status=400)
+
+               
+           
+               
+           else:
+              form = SubjectForm(request.POST)                
+              return JsonResponse({'status': 'error', 'errors': "Duplicate Entry"}, status=400)
+           return JsonResponse({'error': 'Invalid request'}, status=400)
+           
+
+
+
+          
+
+        #     print("ajax")
+        #     form = SubjectForm(request.POST)
+        #     subject = Subjects.objects.all().order_by('code')
+        #     if form.is_valid():
+
+        #         instance = form.save()
+             
+        #         success = "Created"
+                
+        #         # return JsonResponse({'status': 'success', 'id': instance.id, 'name': instance.heads}, safe=False) # Example data
+        #         return HttpResponse(success)
+        #         messages.success(request, "Subjects Saved Successfully !!!")
+
+        #     else:
+        #         form = SubjectForm(request.POST)
+        #         context = {
+        #             'form' : form,         
+        #             'subjects_active': 'active',
+        #             'table_name' : subject,
+        #         }
+        #         return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+        #     return JsonResponse({'error': 'Invalid request'}, status=400)
+        #     #     # return render(request, "marksheet/subjects/add.html", context)
+        #     # # return redirect('/subject/index')
        
     
 
@@ -372,6 +438,50 @@ class RegisterView(View):
             return render(request, "marksheet/register.html", context)
         return redirect('/register')
              
+#===================STUDENT PROFILE VIEW BEGINS HERE ==============================
+class StudentProfileAddView(View):
+    def get(self, request):      
+         form = StudentProfileForm()
+         student_profile = StudentProfile.objects.all().order_by('students_name')
+         
+        
+         context = {
+             'form': form,
+             'table_name': student_profile,
+         }
+         return render(request,"marksheet/student-profile/add.html", context)
+
+    def post(self, request):
+        form = StudentProfileForm(request.POST)
+        student_profile = StudentProfile.objects.all().order_by('students_name')
+
+      
+        if form.is_valid():
+            form.save()  
+            messages.success(request, "Student Profile Created Successfully !!!")   
+        else:
+            print(form.errors)
+            form = StudentProfile(request.POST)
+            context = {
+                'form' : form,         
+                'student_profile': 'active',
+                'table_name' : student_profile,
+            }
+
+            return render(request, "marksheet/student-profile/add.html", context)
+        
+        return redirect('/student-profile/index')
+
+    
+class StudentProfileView(TemplateView):
+    template_name="marksheet/student-profile/index.html"
+
+    def get_context_data(self, **kwargs):
+        pass
+
+
+   
+#===================STUDENT PROFILE VIEW BEGINS ENDS HERE ==============================
 
 #===================MARKSHEET VIEW BEGINS HERE ==============================
 class MarksheetAddView(View):

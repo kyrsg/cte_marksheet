@@ -28,6 +28,7 @@ class UserManager(BaseUserManager):
             mobile_no = mobile_no,
             email = self.normalize_email(email),           
         )
+        user.is_active = True
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -93,12 +94,11 @@ class StudentProfile(models.Model):
         verbose_name_plural = 'STUDENTS PROFILE'
 
     students_name = models.CharField(max_length=100, null=False, blank=False, db_index=True)
-    students_dob = models.DateField()
-    fathers_name = models.CharField(max_length=100, null=True, blank=True)
-    mothers_name = models.CharField(max_length=100, null=True, blank=True)
-    students_address = models.CharField(max_length=200, null=True, blank=True)
+    regn_no = models.CharField(max_length=20, null=True, blank=True)   
+    roll_no = models.CharField(max_length=20, default=None, null=False, blank=False, db_index=True, unique=True)    
     mobile_no = models.CharField(max_length=10, blank=True, null=True, validators=[MaxLengthValidator(10,"Mobile Number cannot be more than 10 Digits")] )
     alternate_no = models.CharField(max_length=10, blank=True, null=True, validators=[MaxLengthValidator(10,"Mobile Number cannot be more than 10 Digits")] )
+    email_address = models.EmailField(max_length=50, unique=True, default=None)    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -107,9 +107,7 @@ class Marksheet(models.Model):
         db_table = 't_marksheet'
         verbose_name_plural = 'MARKSHEETS'
         
-    student_id = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, default=0)
-    roll_no = models.CharField(max_length=20, null=False, blank=False, db_index=True, unique=True)    
-    regn_no = models.CharField(max_length=20, null=True, blank=True)   
+    student_id = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, default=0)    
     exam_year =  models.CharField(max_length=20, null=True, blank=True)
     certificate_upload = models.FileField(upload_to="certificate")
     marksheet_upload = models.FileField(upload_to="marksheet")
@@ -131,19 +129,7 @@ class Marks(models.Model):
     total_credits_earned = models.CharField(max_length=30, null=True)
     sgpa = models.CharField(max_length=30, null=True)
 
-class Subjects(models.Model):
-    class Meta:
-        db_table = 't_subjects'
-        verbose_name_plural = "SUBJECTS"
-    
-    code = models.CharField(max_length=30, blank=True, null=True)
-    heads = models.CharField(max_length=100, unique=True, blank=False, null=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def clean(self):
-        self.code = self.code.capitalize()
-        self.heads = self.heads.capitalize()
 
 
 class PaperNo(models.Model):
@@ -206,6 +192,23 @@ class Semester(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.heads
+
+class Subjects(models.Model):
+    class Meta:
+        db_table = 't_subjects'
+        verbose_name_plural = "SUBJECTS"
+    
+    semester_id = models.ForeignKey(Semester, on_delete=models.CASCADE, related_name="semester_subjects")
+    code = models.CharField(max_length=30, blank=True, null=True)
+    heads = models.CharField(max_length=100, unique=True, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        self.code = self.code.capitalize()
+        self.heads = self.heads.capitalize()
 
 class Batch(models.Model):
     class Meta:

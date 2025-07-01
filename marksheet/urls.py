@@ -13,15 +13,15 @@ urlpatterns = [
 
     #==========SUBJECT MODULE URL SETTINGS================ 
     path("subject/index/",  login_required(views.SubjectAddView.as_view()), name="subject-add"),
-    path("subject/edit/<int:pk>",  login_required(views.SubjectEditView.as_view()), name="subject-edit"),
-    path("subject/delete/<int:pk>",  login_required(views.SubjectDeleteView.as_view()), name="subject-delete"),
+    path("subject/edit/<int:pk>/",  login_required(views.SubjectEditView.as_view()), name="subject-edit"),
+    path("subject/delete/<int:pk>/",  login_required(views.SubjectDeleteView.as_view()), name="subject-delete"),
     #====================ENDS HERE========================
 
 
     #==========SEMESTER MODULE URL SETTINGS================ 
     path("semester/index/",  login_required(views.SemesterAddView.as_view()), name="semester-add"),
-    path("semester/edit/<int:pk>",  login_required(views.SemesterEditView.as_view()), name="semester-edit"),
-    path("semester/delete/<int:pk>",  login_required(views.SemesterDeleteView.as_view()), name="semester-delete"),
+    path("semester/edit/<int:pk>/",  login_required(views.SemesterEditView.as_view()), name="semester-edit"),
+    path("semester/delete/<int:pk>/",  login_required(views.SemesterDeleteView.as_view()), name="semester-delete"),
     #====================ENDS HERE========================
 
 

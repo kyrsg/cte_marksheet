@@ -231,10 +231,11 @@ class SubjectEditView(View):
 
 class SubjectDeleteView(View):
     def get(self, request, pk=None):
-        subject = get_object_or_404(Subjects, pk=pk)
-        subject.delete()
-        messages.warning(request, "Subjects Deleted Successfully !!!")   
-        return redirect('/subject/index')      
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request
+            subject = get_object_or_404(Subjects, pk=pk) 
+            subject.delete()          
+            return JsonResponse({'status': 'success', 'id': pk})            
+    
       
 #==================SUBJECT VIEW ENDS HERE ==================================
 

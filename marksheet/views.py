@@ -1,20 +1,35 @@
-from django.shortcuts import render, HttpResponseRedirect, redirect, HttpResponse
-from django.views import View
-from .forms import UserForm, OrganizationForm, SubjectForm, SemesterForm, BatchForm, LoginForm, StudentProfileForm
-from .models import User, Organization, Subjects, Semester, Batch, StudentProfile
-from django.contrib import messages, auth 
-from django.views.generic import TemplateView
-from django.shortcuts import get_object_or_404
 
+# ============ DJANGO SHORTCUTS ============
+from django.shortcuts import render, HttpResponseRedirect, redirect, HttpResponse, get_object_or_404
+
+# ============ DJANGO FORMS============
+from .forms import UserForm, OrganizationForm, SubjectForm, SemesterForm, BatchForm, LoginForm, StudentProfileForm
+
+# ============ DJANGO MODELS============
+from .models import User, Organization, Subjects, Semester, Batch, StudentProfile
+
+# ============ DJANGO VIEWS============
+from django.views import View
+from django.views.generic import TemplateView
+
+# ============ DJANGO CONTRIB ============
+from django.contrib import messages, auth 
+
+# ============ DJANGO URLS============
+from django.urls import reverse
+
+# ============ DJANGO JSON HTTP============
 from django.http import JsonResponse
+
+# ============ DJANGO DB ERRORS============
 from django.db import IntegrityError
 # Create your views here.
 
 def get_filtered_data(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request
-       
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request       
+        
         selected_value = request.GET.get('selected_value')
-       
+             
         # Filter your data based on selected_value
         filtered_data = Subjects.objects.filter(semester_id=selected_value).values() # .values() returns a list of dictionaries
 
@@ -130,6 +145,7 @@ class SubjectAddView(View):
            
            if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
               
+                
                 semester_id = request.POST.get('semester_id')
                 my_instance = Semester.objects.get(pk=semester_id)             
 
@@ -235,7 +251,7 @@ class SubjectDeleteView(View):
             subject = get_object_or_404(Subjects, pk=pk) 
             subject.delete()          
             return JsonResponse({'status': 'success', 'id': pk})            
-    
+        return JsonResponse({'status': 'error'})   
       
 #==================SUBJECT VIEW ENDS HERE ==================================
 
@@ -257,24 +273,17 @@ class SemesterAddView(View):
         return render(request, "marksheet/semester/add.html", context)
 
     def post(self, request):        
-        form = SemesterForm(request.POST)
-        semester = Semester.objects.all().order_by('heads')
-
-       
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Semester Saved Successfully !!!")   
-        else:
-            form = SemesterForm(request.POST)
-            context = {
-                'form' : form,         
-                'semester_active': 'active',
-                'table_name' : semester,
-            }
-
-            return render(request, "marksheet/semester/add.html", context)
-        
-        return redirect('/semester/index')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+            try:
+                heads = request.POST.get("heads")
+              
+                instance = Semester(heads=heads)                
+                instance.save()
+                return JsonResponse({'status': 'success', 'id' : instance.id, 'heads': instance.heads})
+            except :
+                return JsonResponse({'status': 'error',  'message' : 'Semester Already Exist'})
+        return JsonResponse({'status' : 'Not a Valid AJAX Request'})
+            
 
 class SemesterEditView(View):
     def get(self, request, pk=None):
@@ -291,36 +300,32 @@ class SemesterEditView(View):
         return render(request, "marksheet/semester/edit.html", context)
 
     def post(self, request, pk=None):
-        
-        semester = get_object_or_404(Semester, pk=pk)
-        form = SemesterForm(request.POST, instance=semester)     
-      
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Semester Updated Successfully !!!")   
-        else:
-            context = {
-                'form' : form,         
-                'semester_active': 'active',
-                'table_name' : semester,
-            }
-       
-            return render(request, "marksheet/semester/edit.html", context)
-        return redirect('/semester/index')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+            try:
+                heads = request.POST.get("heads")    
+                instance = get_object_or_404(Semester, pk=pk)
+                instance.heads =  heads
+                instance.save() 
+               
+                return JsonResponse({'status': 'success', 'id' : instance.id, 'heads': instance.heads, 'redirect_url': reverse("semester-add")})
+            except :
+                return JsonResponse({'status': 'error',  'message' : 'Semester Already Exist'})
+        return JsonResponse({'status' : 'Not a Valid AJAX Request'})
+            
 
 
 class SemesterDeleteView(View):
     def get(self, request, pk=None):
         semester = get_object_or_404(Semester, pk=pk)
-        semester.delete()
-        messages.warning(request, "Semester Deleted Successfully !!!")     
-        return redirect('/semester/index')      
+        semester.delete()       
+        return JsonResponse({'status':'success', 'id':pk, 'module': 'Semester'})      
       
 #==================SEMESTER VIEW ENDS HERE ==================================
 
-
 #===================BATCH VIEW BEGINS HERE ==============================
+
 class BatchAddView(View):
+   
     def get(self, request):
         form = BatchForm()
         batch = Batch.objects.all().order_by('heads')
@@ -333,30 +338,23 @@ class BatchAddView(View):
         return render(request, "marksheet/batch/add.html", context)
 
     def post(self, request):        
-        form = BatchForm(request.POST)
-        batch = Batch.objects.all().order_by('heads')
-
-       
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Batch Saved Successfully !!!")   
-        else:
-            form = BatchForm(request.POST)
-            context = {
-                'form' : form,         
-                'batch_active': 'active',
-                'table_name' : batch,
-            }
-
-            return render(request, "marksheet/batch/add.html", context)
-        
-        return redirect('/batch/index')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+            try:
+                heads = request.POST.get("heads")
+              
+                instance = Batch(heads=heads)                
+                instance.save()
+                return JsonResponse({'status': 'success', 'id' : instance.id, 'heads': instance.heads})
+            except :
+                return JsonResponse({'status': 'error',  'message' : 'Batch Already Exist'})
+        return JsonResponse({'status' : 'Not a Valid AJAX Request'})
+            
 
 class BatchEditView(View):
     def get(self, request, pk=None):
      
         batch = get_object_or_404(Batch, pk=pk)
-        form = SemesterForm(instance=batch)          
+        form = BatchForm(instance=batch)          
         
         context = {
             'form' : form,         
@@ -367,32 +365,28 @@ class BatchEditView(View):
         return render(request, "marksheet/batch/edit.html", context)
 
     def post(self, request, pk=None):
-        
-        batch = get_object_or_404(Batch, pk=pk)
-        form = BatchForm(request.POST, instance=batch)     
-      
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Batch Updated Successfully !!!")   
-        else:
-            context = {
-                'form' : form,         
-                'batch_active': 'active',
-                'table_name' : batch,
-            }
-       
-            return render(request, "marksheet/batch/edit.html", context)
-        return redirect('/batch/index')
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+            try:
+                heads = request.POST.get("heads")    
+                instance = get_object_or_404(Batch, pk=pk)
+                instance.heads =  heads
+                instance.save() 
+               
+                return JsonResponse({'status': 'success', 'id' : instance.id, 'heads': instance.heads, 'redirect_url': reverse("batch-add")})
+            except :
+                return JsonResponse({'status': 'error',  'message' : 'Batch Already Exist'})
+        return JsonResponse({'status' : 'Not a Valid AJAX Request'})
+            
 
 
 class BatchDeleteView(View):
     def get(self, request, pk=None):
         batch = get_object_or_404(Batch, pk=pk)
-        batch.delete()
-        messages.warning(request, "Batch Deleted Successfully !!!")   
-        return redirect('/batch/index')      
+        batch.delete()       
+        return JsonResponse({'status':'success', 'id':pk, 'module': 'Batch'})      
       
 #==================BATCH VIEW ENDS HERE ==================================
+
 
 class RegisterView(View):
     def get(self, request):
@@ -453,27 +447,26 @@ class StudentProfileAddView(View):
          return render(request,"marksheet/student-profile/add.html", context)
 
     def post(self, request):
-        form = StudentProfileForm(request.POST)
-        student_profile = StudentProfile.objects.all().order_by('students_name')
+         if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+            try:
+                #======GET DATA FROM POST REQUEST===========
+                students_name = request.POST.get("students_name")
+                regn_no = request.POST.get("regn_no")
+                roll_no = request.POST.get("roll_no")
+                mobile_no = request.POST.get("mobile_no")
+                alternate_no = request.POST.get("alternate_no")
+                email_address = request.POST.get("email_address")
+                #===========================================
 
-      
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Student Profile Created Successfully !!!")   
-        else:
-            print(form.errors)
-            form = StudentProfile(request.POST)
-            context = {
-                'form' : form,         
-                'student_profile': 'active',
-                'table_name' : student_profile,
-            }
 
-            return render(request, "marksheet/student-profile/add.html", context)
+                instance = StudentProfile(students_name=students_name, regn_no=regn_no, roll_no=roll_no, mobile_no=mobile_no, alternate_no=alternate_no, email_address=email_address)                
+                instance.save()
+                return JsonResponse({'status': 'success', 'id': instance.id, 'Students Name': instance.students_name, 'Regn No': instance.regn_no, 'Roll No': instance.roll_no, 'Mobile No': instance.mobile_no, 'Email': instance.email_address, 'redirect_url': reverse('student-profile-index')})
+            except :
+                return JsonResponse({'status': 'error',  'message' : 'Roll Number/Regn Number/Email Address Already Exist'})
+            return JsonResponse({'status' : 'Not a Valid AJAX Request'})
         
-        return redirect('/student-profile/index')
-
-    
+   
 class StudentProfileView(TemplateView):
     template_name="marksheet/student-profile/index.html"
 
@@ -484,77 +477,3 @@ class StudentProfileView(TemplateView):
    
 #===================STUDENT PROFILE VIEW BEGINS ENDS HERE ==============================
 
-#===================MARKSHEET VIEW BEGINS HERE ==============================
-class MarksheetAddView(View):
-    def get(self, request):
-        form = BatchForm()
-        batch = Batch.objects.all().order_by('heads')
-        
-        context = {
-            'form' : form,         
-            'batch_active': 'active',
-            'table_name' : batch,
-        }
-        return render(request, "marksheet/batch/add.html", context)
-
-    def post(self, request):        
-        form = BatchForm(request.POST)
-        batch = Batch.objects.all().order_by('heads')
-
-       
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Batch Saved Successfully !!!")   
-        else:
-            form = BatchForm(request.POST)
-            context = {
-                'form' : form,         
-                'batch_active': 'active',
-                'table_name' : batch,
-            }
-
-            return render(request, "marksheet/batch/add.html", context)
-        
-        return redirect('/batch/index')
-
-class BatchEditView(View):
-    def get(self, request, pk=None):
-     
-        batch = get_object_or_404(Batch, pk=pk)
-        form = SemesterForm(instance=batch)          
-        
-        context = {
-            'form' : form,         
-            'batch_active': 'active',
-            'table_name' : batch,
-        }
-        
-        return render(request, "marksheet/batch/edit.html", context)
-
-    def post(self, request, pk=None):
-        
-        batch = get_object_or_404(Batch, pk=pk)
-        form = BatchForm(request.POST, instance=batch)     
-      
-        if form.is_valid():
-            form.save()  
-            messages.success(request, "Batch Updated Successfully !!!")   
-        else:
-            context = {
-                'form' : form,         
-                'batch_active': 'active',
-                'table_name' : batch,
-            }
-       
-            return render(request, "marksheet/batch/edit.html", context)
-        return redirect('/batch/index')
-
-
-class BatchDeleteView(View):
-    def get(self, request, pk=None):
-        batch = get_object_or_404(Batch, pk=pk)
-        batch.delete()
-        messages.warning(request, "Batch Deleted Successfully !!!")   
-        return redirect('/batch/index')      
-      
-#==================BATCH VIEW ENDS HERE ==================================

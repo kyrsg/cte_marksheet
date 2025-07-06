@@ -7,10 +7,14 @@
 {% block header %}
   <h1 class="page-title mb-2"> Semester Settings </h1>
              <h2 class="h5">Welcome back to Semester Configuration.</h2>
-               <p>This module is being used to update the Semester</p>
+               <p>This module is being used to modify the Semester</p>
 {% endblock %}
 
 {% block content %} 
+
+{% block ajax_call %}
+    <script src="{% static 'ajax/semester_ajax.js' %}"></script>
+{% endblock %}
 <div class="col-xl-12 mb-3 mb-xl-0">
 
 
@@ -22,7 +26,7 @@
                      <!-- Info banner -->
                      <div class="col-md-4 bg-info bg-opacity-30 text-info-emphasis d-flex flex-column align-items-center justify-content-center p-3 rounded-start">
                         <h3 class="h1 mb-3 text-info-emphasis">Semester Settings</h3>
-                        <p class="text-center">This module is being used to update the Semester.</p>
+                        <p class="text-center">This module is being used to modify the Semester.</p>
                       
                      </div>
                      <!-- END : Info banner -->
@@ -41,15 +45,23 @@
 
            <div class="text-center">
               <h1 class="h3">Edit a Semester Details</h1>
-              <p>This module is being used to update the Semester.</p>
+              <p>This module is being used to modify the Semester.</p>
            </div>
+      <input type="hidden" value= "{% url 'semester-edit' table_name.id %}" id="getUrl" />
+      <input type="hidden" value= "{{ table_name.id }}" id="getId" />
 
-             <form class="needs-validation" method="post" action="{% url 'semester-edit' table_name.id %}" novalidate>
+             <form id="myform" class="needs-validation" novalidate>
             {% csrf_token %}
-              <div class="w-md-800px d-inline-flex row g-3 mb-4" style="width:100%;">
+              <div class="w-md-800px d-inline-flex row g-3 mb-4" style="width:100%;"> 
                
-                 </div>
-                 <div class="col-sm-12">
+               <div class="col-sm-3">                  
+                  <label style="color:red; padding-top: 10px;" >Enter Semester Year *</label>     
+                 </div>    
+
+
+               
+                 <div class="col-sm-9">
+                  
                   {{ form.heads }}
                     <div class="invalid-feedback">Please input Semester Name</div>
                  </div>      
@@ -57,8 +69,7 @@
            
               <br>
 
-          
-            
+              {% include 'includes/loader.html'%}
          <div class="card">
                <ul class="errorlist"> 
                   {% if form.errors %}              
@@ -76,20 +87,27 @@
                </ul>
             </div>
              
+             <div class="w-md-800px d-inline-flex row g-3 mb-4" style="width:100%;"> 
+            <div class="col-sm-3">
+                 <a href = "{% url 'semester-add' %}" class="btn btn-danger btn-lg" style="width:100%;"> GO BACK </a>
+             </div> 
 
+
+             <div class="col-sm-9">
+                 <button class="btn btn-primary btn-lg" style="width:100%;" id="editsemester">UPDATE</button>        
+             </div>    
+            </div>
+                      
               
-             
-              <div class="d-grid mt-2">
-                 <button class="btn btn-primary btn-lg"  type="submit">UPDATE</button>               
-              </div>
-         
            </form>
+
+         
 
            {% comment %} <div class="d-flex justify-content-between mt-4">
               Already have an account ?
               <a href="{% url 'login' %}" class="btn-link text-decoration-none">Sign In</a>
            </div> {% endcomment %}
-
+             {% comment %} {% include 'includes/message.html' %} {% endcomment %}
     </div>
 
 

@@ -3,8 +3,9 @@ $(document).on('click', '.remove', function(e) {
      e.preventDefault();   
      url = $(this).attr('data-url');
      
+  
 
-     Swal.fire({
+  Swal.fire({
   title: "Are you sure?",
   text: "You won't be able to revert this!",
   icon: "warning",
@@ -20,25 +21,25 @@ $(document).on('click', '.remove', function(e) {
         type: 'GET',
         url: url,
         success: function(response){
+       
          if (response.status == 'success') {
-            document.getElementById('Row-' + response.id).remove();
+          getID= "ROW-" + response.id;    
+        
+          document.getElementById(getID).remove();
+        
+          Swal.fire({
+          title: "Deleted!",
+          text:  response.module + " deleted successfully.",
+          icon: "success"
+      });
          }
         }
      });
 
 
-    Swal.fire({
-      title: "Deleted!",
-      text: "Your file has been deleted.",
-      icon: "success"
-    });
+   
   }
 });
-
-
-});
-
-   
-      
+});  
  
 //========================================================

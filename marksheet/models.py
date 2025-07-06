@@ -1,8 +1,11 @@
 from django.db import models
+from django.forms import ValidationError
 from django.urls import reverse 
 # from django.utils.text import slugify
 from django.core.validators import  MaxLengthValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
+from .fields import CaseInsensitiveCharField
 
 # Create your models here.
 
@@ -191,6 +194,10 @@ class Semester(models.Model):
     heads = models.CharField(max_length=50, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+            self.heads = self.heads.upper()  # Convert 'name' to uppercase
+            super().save(*args, **kwargs)  # Call the original save method
 
     def __str__(self):
         return self.heads

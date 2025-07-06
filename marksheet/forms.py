@@ -13,10 +13,15 @@ class UserForm (forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             self.fields['first_name'].widget.attrs['placeholder'] = 'First Name'
+            self.fields['first_name'].widget.attrs['autocomplete'] = 'off'
             self.fields['last_name'].widget.attrs['placeholder'] = 'Last Name'
+            self.fields['last_name'].widget.attrs['autocomplete'] = 'off'
             self.fields['username'].widget.attrs['placeholder'] = 'Username'
+            self.fields['username'].widget.attrs['autocomplete'] = 'off'
             self.fields['mobile_no'].widget.attrs['placeholder'] = 'Mobile No'
+            self.fields['mobile_no'].widget.attrs['autocomplete'] = 'off'
             self.fields['email'].widget.attrs['placeholder'] = 'Email Address'
+            self.fields['email'].widget.attrs['autocomplete'] = 'off'
             self.fields['password'].widget.attrs['placeholder'] = 'Password'
             self.fields['confirm_password'].widget.attrs['placeholder'] = 'Confirm Password'          
 
@@ -37,7 +42,7 @@ class SubjectForm(forms.ModelForm):
         fields = ['semester_id', 'code', 'heads']
 
    
-    semester_id = forms.ModelChoiceField(queryset=Semester.objects.all())
+    semester_id = forms.ModelChoiceField(queryset=Semester.objects.all(), widget=forms.Select(attrs={'style': 'text-transform: uppercase;'}))
     code = forms.CharField(max_length=30)
     heads = forms.CharField(max_length=100)    
 
@@ -45,9 +50,11 @@ class SubjectForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-            self.fields['semester_id'].widget.attrs['placeholder'] = 'Select Semester'
+            self.fields['semester_id'].widget.attrs['placeholder'] = 'Select Semester'         
             self.fields['code'].widget.attrs['placeholder'] = 'Enter Code'
+            self.fields['code'].widget.attrs['autocomplete'] = 'off'
             self.fields['heads'].widget.attrs['placeholder'] = 'Enter Subject Name'
+            self.fields['heads'].widget.attrs['autocomplete'] = 'off'
           
 class OrganizationForm(forms.ModelForm):
     class Meta:
@@ -79,13 +86,16 @@ class SemesterForm(forms.ModelForm):
         model = Semester
         fields = ['heads']
    
-    heads = forms.CharField(max_length=50)    
+    heads = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'style': 'text-transform: uppercase;'}))    
+
+   
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-            self.fields['heads'].widget.attrs['placeholder'] = 'Enter Semester Name'
+            # self.fields['heads'].widget.attrs['placeholder'] = 'Enter Semester Name'
+            self.fields['heads'].widget.attrs['autocomplete'] = 'off'
 
 class BatchForm(forms.ModelForm):
     class Meta:
@@ -99,6 +109,7 @@ class BatchForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             self.fields['heads'].widget.attrs['placeholder'] = 'Enter Batch Name' 
+            self.fields['heads'].widget.attrs['autocomplete'] = 'off'
 
 class LoginForm(forms.ModelForm):
     class Meta:
@@ -125,10 +136,10 @@ class StudentProfileForm(forms.ModelForm):
     students_name = forms.CharField(max_length=100)
     regn_no = forms.CharField(max_length=100)
     roll_no = forms.CharField(max_length=100)
-    mobile_no = forms.CharField(max_length=100)
-    alternate_no = forms.CharField(max_length=100)
-    email_address = forms.EmailField(max_length=50)
-    
+    mobile_no = forms.CharField(max_length=10, widget=forms.NumberInput())
+    alternate_no = forms.CharField(max_length=10, widget=forms.NumberInput())
+    email_address = forms.EmailField(max_length=50, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'name@example.com'}))
+
     
 
     def __init__(self, *args, **kwargs):
@@ -136,11 +147,21 @@ class StudentProfileForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             self.fields['students_name'].widget.attrs['placeholder'] = 'Enter Students Name'
+            self.fields['students_name'].widget.attrs['autocomplete'] = 'off'
+
             self.fields['regn_no'].widget.attrs['placeholder'] = 'Enter Registration Number'
-            self.fields['roll_no'].widget.attrs['placeholder'] = 'Enter Roll NO'
+            self.fields['regn_no'].widget.attrs['autocomplete'] = 'off'
+
+            self.fields['roll_no'].widget.attrs['placeholder'] = 'Enter Roll No'
+            self.fields['roll_no'].widget.attrs['autocomplete'] = 'off'
+
             self.fields['mobile_no'].widget.attrs['placeholder'] = 'Mobile No'
-            self.fields['alternate_no'].widget.attrs['placeholder'] = 'Alternate Mobile NO'
-            self.fields['email_address'].widget.attrs['placeholder'] = 'Email Address'
+            self.fields['mobile_no'].widget.attrs['autocomplete'] = 'off'
+
+            self.fields['alternate_no'].widget.attrs['placeholder'] = 'Alternate Mobile No'
+            self.fields['alternate_no'].widget.attrs['autocomplete'] = 'off'
+            
+            self.fields['email_address'].widget.attrs['autocomplete'] = 'off'
           
 
 

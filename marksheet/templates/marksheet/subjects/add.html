@@ -30,7 +30,7 @@
                     var tableBody = $('#myTable tbody');
                     tableBody.empty(); // Clear existing data
                     $.each(data, function(index, item) {
-                        var row = '<tr id="Row-" + ' + item.id + '><td>' + item.code + '</td> <td>' + item.heads + '</td> <td><a href=/subject/edit/' + item.id + '><img src="{% static "img/edit.png" %}"> </img></a></td><td><a href="#" class="remove" data-id=' + item.id + ' data-url="/subject/delete/'  + item.id + '/"> <img src="{% static "img/delete.png" %}"> </img> </a></td></tr>';
+                        var row = '<tr id="ROW-' + item.id +'"><td>' + item.code + '</td> <td>' + item.heads + '</td> <td><a href=/subject/edit/' + item.id + '><img src="{% static "img/edit.png" %}"> </img></a></td><td><a href="#" class="remove" data-id=' + item.id + ' data-url="/subject/delete/'  + item.id + '/"> <img src="{% static "img/delete.png" %}"> </img> </a></td></tr>';
                         tableBody.append(row);
                     });
                 },
@@ -69,7 +69,7 @@
                     var tableBody = $('#myTable tbody');
                     tableBody.empty(); // Clear existing data
                     $.each(data, function(index, item) {
-                        var row = '<tr="Row-" + ' + item.id + '><td>' + item.code + '</td> <td>' + item.heads + '</td> <td>' + "<a href=/subject/edit/" + item.id + "><img src={% static 'img/edit.png' %}> </img></a>" + '</td><td>' + "<a href=/subject/delete/" + item.id + "')\" +><img src={% static 'img/delete.png' %}> </img></a>" + '</td></tr>';
+                        var row = '<tr id="ROW-' + item.id + '"><td>' + item.code + '</td> <td>' + item.heads + '</td> <td><a href=/subject/edit/' + item.id + '><img src="{% static "img/edit.png" %}"> </img></a></td><td><a href="#" class="remove" data-id=' + item.id + ' data-url="/subject/delete/'  + item.id + '/"> <img src="{% static "img/delete.png" %}"> </img> </a></td></tr>';                       
                         tableBody.append(row);
                     });
 
@@ -79,7 +79,7 @@
                 text: 'Record Saved Successfully',
                 timer: 3000, // Optional: automatically close after 3 seconds
                 showConfirmButton: true, // Optional: hide the confirm button
-                position: 'top-end' // Optional: position the alert
+               // position: 'top-end' // Optional: position the alert
             });
                 },
                  complete: function(){
@@ -99,10 +99,7 @@
                 showConfirmButton: true, // Optional: hide the confirm button
                 position: 'top-end' // Optional: position the alert
             });
-
-                 
-                   
-                }
+         }
          });        
         });
     

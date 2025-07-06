@@ -11,6 +11,10 @@
 {% endblock %}
 
 {% block content %} 
+
+{% block ajax_call %}
+    <script src="{% static 'ajax/student_profile_ajax.js' %}"></script>
+{% endblock %}
 <div class="col-xl-12 mb-3 mb-xl-0">
 
 
@@ -20,11 +24,11 @@
                   <div class="d-md-flex align-content-stretch">
 
                      <!-- Info banner -->
-                     <div class="col-md-4 bg-info bg-opacity-30 text-info-emphasis d-flex flex-column align-items-center justify-content-center p-3 rounded-start">
+                     {% comment %} <div class="col-md-4 bg-info bg-opacity-30 text-info-emphasis d-flex flex-column align-items-center justify-content-center p-3 rounded-start">
                         <h3 class="h1 mb-3 text-info-emphasis">Student Profile</h3>
-                        <p class="text-center">This module is being used to set the Display the Student Profile.</p>
+                        <p class="text-center">This modulea is being used to set the Display the Student Profile.</p>
                       
-                     </div>
+                     </div> {% endcomment %}
                      <!-- END : Info banner -->
 
                      <!-- <div class="d-none d-md-block vr"></div> -->
@@ -46,76 +50,59 @@
               <p> This Module is used to display the Student Profile.</p>
            </div>
 
-          
+   <input type="hidden" value= "{% url 'student-profile-search' %}" id="getUrl" />    
+
  <div class="card">
                   <div class="card-header">
                   
                      <!-- Toolbar -->
-                     <div class="d-flex gap-2 py-3">
-                        <select id="_dm-filterField" class="form-select">
-                           <option value="none">Select field</option>
+                     <div class="d-flex  gap-2 py-3">
+                        <select id="_dm-filterField" class="form-select" name="filterfield">
+                           <option value="None">Select field</option>
                            <option value="students_name">Students Name</option>
-                           <option value="Batch_year">Batch Year</option>
+                           <option value="regn_no">Registration No</option>
                            <option value="roll_no">Roll Number</option>
-                           <option value="regn_no">Registration Number</option>
-                       
+                           <option value="mobile_no">Mobile No</option>
                         </select>
-{% comment %} 
-                        <select id="_dm-filterType" class="form-select">
-                           <option value="like">Like</option>
-                           <option value="=">=</option>
-                           <option value="<">
-                              << /option>
-                           <option value="<=">
-                              <=< /option>
-                           <option value=">">></option>
-                           <option value=">=">>=</option>
-                           <option value="!=">!=</option>
-                        </select> {% endcomment %}
 
-                        <input id="_dm-filterValue" class="form-control" type="text" placeholder="value to filter">
-                        <button id="_dm-filterClear" class="btn btn-primary text-nowrap">Search Result</button>
+                        <input id="filtervalue" class="form-control" type="text" placeholder="Value to Filter">
+                        <button id="search" class="btn btn-primary text-nowrap">Search Result</button>
                         <a href="{% url 'student-profile-add' %}" class="btn btn-success text-nowrap"> CREATE STUDENT PROFILE </a>
                       
                      </div>
                      <!-- END : Toolbar -->
 
                   </div>
-                  <div class="card-body">
-
-
-                     <!-- Filter Data -->
-                     <div id="_dm-tabulatorFilter" class="table table-striped"></div>
-                     <!-- END : Filter Data -->
-
-
-                  </div>
-
+         
                     <!-- Small table -->
                            <div class="table-responsive">
-                              <table class="table table-sm">
+                              <table id="myTable" class="table table-sm">
                                  <thead>
                                     <tr>
-                                       <th>Students Name</th> 
-                                        <th>Email Address</th> 
-                                       <th>Registration No</th>  
-                                        <th>Roll Number</th>
+                                       <th>STUDENTS NAME</th> 
+                                        <th>EMAIL ADDRESS</th> 
+                                       <th>REGISTRATION NO</th>  
+                                        <th>ROLL NUMBER</th>
+                                         <th>MOBILE NUMBER</th>
+                                         <th></th>
                                         <th></th>
                                         <th></th>
-                                       <th></th>                                      
+                                                                  
                                       
                                     </tr>
                                  </thead>
                                  <tbody>
                                     {% for col in table_name %}
-                                       <tr>
+                                       <tr id="ROW-{{col.id}}">
                                        <td> {{ col.students_name }}</td>
                                        <td> {{ col.email_address }}</td>
                                        <td> {{ col.regn_no }} </td>
                                        <td> {{ col.roll_no }}</td>
-                                       <td></td>
-                                       <td></td>
-                                       <td></td>
+                                       <td> {{ col.mobile_no }}</td>
+                                       <td><a href="{% url 'student-profile-edit' col.id %}"><img src="{% static 'img/cert.jpg' %}"> </img> </a></td>                           
+                                       <td><a href="{% url 'student-profile-edit' col.id %}"><img src="{% static 'img/edit.png' %}"> </img> </a></td>                           
+                                       <td><a href="#" class="remove" data-url="{% url 'student-profile-delete' col.id %}"><img src="{% static 'img/delete.png' %}"> </img> </a></td>                           
+                                      
                                     </tr>
                                     {% endfor %}
                                    
@@ -125,10 +112,41 @@
                            </div>
                            <!-- END : Small table -->
 
+<nav aria-label="...">
+   <div style="float:left;  margin-bottom: 10px; ">
+       <span class="current" >         
+            Page {{ table_name.number }} of {{ table_name.paginator.num_pages }}.        
+       </span>      
+   </div>
+
+  <div style="float:right; margin-top: -6px;">
+  <ul class="pagination">
+
+   {% if table_name.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ table_name.previous_page_number }}">Previous</a></li>
+    
+   {% endif %}
+
+   {% if table_name.has_next %}
+    <li class="page-item">
+       <a class="page-link" href="?page={{ table_name.next_page_number }}">Next</a>
+    </li>
+
+     <li class="page-item">
+       <a class="page-link" href="?page={{ table_name.paginator.num_pages }}">Last</a>
+    </li>
+           
+   {% endif %}
+
+ 
+  </ul>
+  </div>
+</nav>
 
  </div>
  
-             {% include 'includes/message.html' %}
+            
   </div>
   
 

@@ -27,6 +27,7 @@
                 },
                 dataType: 'json',
                 success: function(data) {
+                  console.log(data);
                     var tableBody = $('#myTable tbody');
                     tableBody.empty(); // Clear existing data
                     $.each(data, function(index, item) {

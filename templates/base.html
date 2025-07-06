@@ -51,6 +51,8 @@
     {% block ajax_call %}
 
     {% endblock %}
+
+ 
    <!-- Favicons [ OPTIONAL ] -->
    {% comment %} <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"> {% endcomment %}
    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/logo.png' %}">
@@ -80,7 +82,15 @@
 
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-
+<script type="text/javascript">
+        function preventBack() {
+            window.history.forward(); 
+        }
+        
+        setTimeout("preventBack()", 0);
+        
+        window.onunload = function () { null };
+    </script>
 </head>
 
 <body class="out-quart">
@@ -454,7 +464,7 @@
                         <ul class="mininav-content nav collapse">
                            <li data-popper-arrow class="arrow"></li>
                             <li class="nav-item">
-                              <a href="{% url 'student-profile-index' %}" class="nav-link">Student Profile</a>
+                              <a href="{% url 'student-profile-index' %}" class="nav-link {{ student_profile_active }}">Student Profile</a>
                            </li>
                            <li class="nav-item">
                               <a href="./layouts-mini-navigation.html" class="nav-link">Marksheet</a>

@@ -15,14 +15,19 @@ from django.views.generic import TemplateView
 # ============ DJANGO CONTRIB ============
 from django.contrib import messages, auth 
 
-# ============ DJANGO URLS============
+# ============ DJANGO URLS ============
 from django.urls import reverse
 
-# ============ DJANGO JSON HTTP============
+# ============ DJANGO JSON HTTP ============
 from django.http import JsonResponse
 
-# ============ DJANGO DB ERRORS============
+# ============ DJANGO DB ERRORS ============
 from django.db import IntegrityError
+
+# ============ DJANGO CORE ==========
+from django.core.paginator import Paginator
+from django.core import serializers
+
 # Create your views here.
 
 def get_filtered_data(request):
@@ -434,15 +439,28 @@ class RegisterView(View):
         return redirect('/register')
              
 #===================STUDENT PROFILE VIEW BEGINS HERE ==============================
+
+class StudentProfileView(View):
+    def get(self, request):
+        student_profile = StudentProfile.objects.all().order_by('students_name')
+        paginator = Paginator(student_profile,10)
+
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        context = {            
+             'table_name': page_obj,
+             'student_profile_active': 'active',
+         }
+        return render(request,"marksheet/student-profile/index.html", context)
+
 class StudentProfileAddView(View):
     def get(self, request):      
-         form = StudentProfileForm()
-         student_profile = StudentProfile.objects.all().order_by('students_name')
-         
-        
+         form = StudentProfileForm()     
+                 
          context = {
-             'form': form,
-             'table_name': student_profile,
+             'form': form, 
+             'student_profile_active': 'active',           
          }
          return render(request,"marksheet/student-profile/add.html", context)
 
@@ -467,13 +485,70 @@ class StudentProfileAddView(View):
             return JsonResponse({'status' : 'Not a Valid AJAX Request'})
         
    
-class StudentProfileView(TemplateView):
-    template_name="marksheet/student-profile/index.html"
+class StudentProfileEditView(View):
+    def get(self, request, pk=None):      
+        student_profile = get_object_or_404(StudentProfile, pk=pk)
+        form = StudentProfileForm(instance=student_profile)          
+        
+        context = {
+            'form' : form,         
+            'student_profile_active': 'active',
+            'table_name' : student_profile,
+        }
+        
+        return render(request, "marksheet/student-profile/edit.html", context)
 
-    def get_context_data(self, **kwargs):
-        pass
+    def post(self, request,pk=None):
+         if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request 
+            try:
+                #======GET DATA FROM POST REQUEST===========
+                students_name = request.POST.get("students_name")
+                regn_no = request.POST.get("regn_no")
+                roll_no = request.POST.get("roll_no")
+                mobile_no = request.POST.get("mobile_no")
+                alternate_no = request.POST.get("alternate_no")
+                email_address = request.POST.get("email_address")
+                #===========================================
+                print(pk)
+                instance = get_object_or_404(StudentProfile, pk=pk)
+                instance.students_name =  students_name
+                instance.regn_no =  regn_no
+                instance.roll_no =  roll_no
+                instance.mobile_no =  mobile_no
+                instance.alternate_no =  alternate_no
+                instance.email_address =  email_address
+                instance.save() 
+                
+                return JsonResponse({'status': 'success', 'id': instance.id, 'Students Name': instance.students_name, 'Regn No': instance.regn_no, 'Roll No': instance.roll_no, 'Mobile No': instance.mobile_no, 'Email': instance.email_address, 'redirect_url': reverse('student-profile-index')})
+            except :
+                return JsonResponse({'status': 'error',  'message' : 'Roll Number/Regn Number/Email Address Already Exist'})
+            return JsonResponse({'status' : 'Not a Valid AJAX Request'})
 
+class StudentProfileDeleteView(View):
+    def get(self, request, pk=None):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest': # Check if it's an AJAX request
+            student_profile = get_object_or_404(StudentProfile, pk=pk) 
+            student_profile.delete()          
+            return JsonResponse({'status': 'success', 'id': pk})            
+        return JsonResponse({'status': 'error'})  
 
+class StudentProfileSearch(View):
+    def get(self, request):
+       filter_field = request.GET.get("filter_field")
+       value_field = request.GET.get("value_field")
+     
+       lookup = f"{filter_field}__icontains"  # Or "__exact", "__startswith", etc.
+       filter_kwargs = {lookup: value_field}      
+
+       search = StudentProfile.objects.filter(**filter_kwargs).values()
+
+       paginator = Paginator(search,10)
+
+       page_number = request.GET.get("page")
+       page_obj = paginator.get_page(page_number)
    
+
+       return JsonResponse(list(page_obj), safe=False)
+       
 #===================STUDENT PROFILE VIEW BEGINS ENDS HERE ==============================
 

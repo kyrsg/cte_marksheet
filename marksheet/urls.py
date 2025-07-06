@@ -34,8 +34,9 @@ urlpatterns = [
     #=============STUDENT PROFILE MODULE URL SETTINGS================ 
     path("student-profile/index/",  login_required(views.StudentProfileView.as_view()), name="student-profile-index"),
     path("student-profile/add/",  login_required(views.StudentProfileAddView.as_view()), name="student-profile-add"),
-    path("student-profile/edit/<int:pk>/",  login_required(views.BatchEditView.as_view()), name="student-profile-edit"),
-    path("student-profile/delete/<int:pk>/",  login_required(views.BatchDeleteView.as_view()), name="student-profile-delete"),
+    path("student-profile/edit/<int:pk>/",  login_required(views.StudentProfileEditView.as_view()), name="student-profile-edit"),
+    path("student-profile/delete/<int:pk>/",  login_required(views.StudentProfileDeleteView.as_view()), name="student-profile-delete"),
+    path("student-profile/search/",  login_required(views.StudentProfileSearch.as_view()), name="student-profile-search"),
     #====================ENDS HERE========================  
 
     #=============MARKSHEET MODULE URL SETTINGS================ 

@@ -2,15 +2,19 @@
 
 {% load static %}
 
-{% block title %} Organization Setup | Marksheet Management System  {% endblock %}
+{% block title %} Edit Student Profile | Marksheet Management System  {% endblock %}
 
 {% block header %}
-  <h1 class="page-title mb-2"> Organization Setup </h1>
-             <h2 class="h5">Welcome back to Organizaion Setup.</h2>
-               <p>This module is being used to set the Organization details !!!</p>
+  <h1 class="page-title mb-2"> Edit Student Profile </h1>
+             <h2 class="h5">Welcome back to Student Profile Modification.</h2>
+               <p>This module is being used to modify the Student Profile !!!</p>
 {% endblock %}
 
 {% block content %} 
+
+{% block ajax_call %}
+    <script src="{% static 'ajax/student_profile_ajax.js' %}"></script>
+{% endblock %}
 <div class="col-xl-12 mb-3 mb-xl-0">
 
 
@@ -21,8 +25,8 @@
 
                      <!-- Info banner -->
                      <div class="col-md-4 bg-info bg-opacity-30 text-info-emphasis d-flex flex-column align-items-center justify-content-center p-3 rounded-start">
-                        <h3 class="h1 mb-3 text-info-emphasis">Organization Details</h3>
-                        <p class="text-center">This module is being used to set the Organization Details.</p>
+                        <h3 class="h1 mb-3 text-info-emphasis">Student Profile</h3>
+                        <p class="text-center">This module is being used to modify the Student Profile.</p>
                       
                      </div>
                      <!-- END : Info banner -->
@@ -40,33 +44,36 @@
         <div class="card-body center" >
 
            <div class="text-center">
-              <h1 class="h3">Setup Organization Details</h1>
-              <p> This Module is used to setup the Organization Details</p>
+              <h1 class="h3">Edit Student Profile</h1>
+              <p> This Module is used to modify the Student Profile</p>
            </div>
 
-           <form class="needs-validation" method="post" action="{% url 'organization-setup' %}" novalidate>
+         <input type="hidden" value= "{% url 'student-profile-edit' table_name.id %}" id="getUrl" />
+         <input type="hidden" value= "{{ table_name.id }}" id="getId" />
+         
+           <form id="myForm" class="needs-validation" novalidate>
             {% csrf_token %}
               <div class="w-md-800px d-inline-flex row g-3 mb-4">
                  <div class="col-sm-6">
                     {% comment %} <input type="text" class="form-control" placeholder="First name" aria-label="First name" autofocus required> {% endcomment %}
-                    {{ form.heads }} 
-                    <div class="invalid-feedback">Please Organization Name</div>
+                    {{ form.students_name }} 
+                    <div class="invalid-feedback">Enter Students Name</div>
                  </div>
                  <div class="col-sm-6">
-                  {{ form.address_1 }} 
-                    <div class="invalid-feedback">Kindly Specify Address</div>
+                  {{ form.regn_no }} 
+                    <div class="invalid-feedback">Enter Registration Number</div>
                  </div>
                  <div class="col-12">
-                  {{ form.address_2 }}
-                    <div class="invalid-feedback">Kindly Specify Address</div>
+                  {{ form.roll_no }}
+                    <div class="invalid-feedback">Enter Roll No</div>
                  </div>
                   <div class="col-12">
-                  {{ form.address_3 }}
-                    <div class="invalid-feedback">Kindly Specify Address</div>
+                  {{ form.mobile_no }}
+                    <div class="invalid-feedback">Enter Mobile No</div>
                  </div>
                  <div class="col-12">
-                  {{ form.mobile_no }}
-                    <div class="invalid-feedback">Please Enter Your Mobile No</div>
+                  {{ form.alternate_no }}
+                    <div class="invalid-feedback">Enter Alternate Mobile No</div>
                  </div>
                  <div class="col-12">
                   {{ form.email_address }}
@@ -90,14 +97,27 @@
                   {% endif %}
                </ul>
 
+ 
+        
+        
+            </div>
+       
+           {% include 'includes/loader.html'%}
+       
+          <div class="w-md-800px d-inline-flex row g-3 mb-4" style="width:100%;"> 
 
+
+            <div class="col-sm-3">
+                 <a href = "{% url 'student-profile-index' %}" class="btn btn-danger btn-lg" style="width:100%;"> GO BACK </a>
+             </div> 
+
+
+             <div class="col-sm-9">
+                 <button class="btn btn-primary btn-lg" style="width:100%;" id="add">UPDATE PROFILE</button>        
+             </div>    
             </div>
 
-
-
-              <div class="d-grid mt-2">
-                 <button class="btn btn-primary btn-lg"  type="submit">Setup Organization</button>               
-              </div>
+             
 
               
             
